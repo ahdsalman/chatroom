@@ -7,7 +7,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['email','first_name','last_name','username','password','password2']
+        fields = ['email','first_name','last_name','username','password','password2','uuid']
 
 
 
@@ -23,3 +23,8 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             if password != password2:
                 raise serializers.ValidationError('password1 and password2 should be same')
             return valid
+        
+
+class OTPSerializer(serializers.Serializer):
+
+    usr_otp=serializers.CharField(max_length=100)

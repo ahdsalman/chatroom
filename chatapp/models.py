@@ -1,6 +1,7 @@
 
 from django.db import models
 from django.contrib.auth.models import BaseUserManager,AbstractBaseUser
+import uuid
 # Create your models here.
 class Usermanager(BaseUserManager):
     def create_user(self,email,username,first_name=None,last_name=None,password=None):
@@ -32,6 +33,7 @@ class User(AbstractBaseUser):
     first_name = models.CharField(max_length=100,null=True)
     last_name = models.CharField(max_length=100,null=True)
     username = models.CharField(max_length=100,unique=True)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     phone = models.CharField(max_length=13,null=True)
     image = models.ImageField(null=True)
 

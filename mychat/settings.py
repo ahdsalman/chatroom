@@ -130,3 +130,13 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'chatapp.User'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'ahammedsalmanp3@gmail.com'
+EMAIL_HOST_PASSWORD = 'vhvw dabi kyup hcjv'
+EMAIL_USE_TLS = True
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'

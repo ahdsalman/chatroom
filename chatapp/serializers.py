@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import User
-
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     password2=serializers.CharField(style={'input_type':'password'},write_only=True)
@@ -8,9 +8,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email','first_name','last_name','username','password','password2','uuid']
-
-
-
 
         def validate(self,valid):
             password = valid.get('password')
@@ -28,3 +25,30 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 class OTPSerializer(serializers.Serializer):
 
     usr_otp=serializers.CharField(max_length=100)
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super(MyTokenObtainPairSerializer, cls).get_token(user)
+        token["username"] = user.username
+        token["email"] = user.email
+        token["is_admin"] = user.is_admin
+        # token["uuid"] = user.uuid
+        return token
+    
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model =User
+        fields = ['email', 'first_name', 'last_name', 'phone', 'image']
+
+    def update(self, instance, validated_data):
+        instance.email = validated_data.get('email', instance.email)
+        instance.phone = validated_data.get('phone',instance.phone)
+        instance.first_name=validated_data.get('first_name',instance.first_name)
+        instance.last_name=validated_data.get('last_name',instance.last_name)
+        instance.image = validated_data.get('image',instance.image)
+        instance.save()
+        return instance
+    

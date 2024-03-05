@@ -2,13 +2,16 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import UserRegisterSerializer,OTPSerializer
+from .serializers import UserRegisterSerializer,OTPSerializer,MyTokenObtainPairSerializer,UserProfileSerializer
 from django.conf import settings
 from .models import User
 import random
 import math
 from chatapp.verify.smtp import send_otp
 from datetime import datetime, timedelta
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 # Create your views here.
 
 class ResgisterView(APIView):
@@ -26,6 +29,7 @@ class ResgisterView(APIView):
                 
             )
             otp = math.floor(random.randint(100000, 999999))
+            print('otp',otp)
             expiration_time = datetime.now() + timedelta(minutes=1)
             request.session['email']=user.email
             request.session['otp']=otp
@@ -64,3 +68,30 @@ class OTPverificationView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+class MyObtainTokenPairView(TokenObtainPairView):
+    permission_classes = (AllowAny,)
+    serializer_class = MyTokenObtainPairSerializer
+
+
+
+
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        try:
+            user = self.request.user
+            serializer = UserProfileSerializer(user)
+            return Response(serializer.data)
+        except Exception as e:
+                return Response(
+                    {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+    def patch(self, request):
+        serializer = UserProfileSerializer(request.user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+            
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

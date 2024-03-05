@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,8 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # intigrations
     'rest_framework',
+    'channels',
     # apps
-    'chatapp'
+    'chatapp',
+    'mainchat'
 ]
 
 MIDDLEWARE = [
@@ -71,7 +74,13 @@ TEMPLATES = [
     },
 ]
 
+ASGI_APPLICATION = "mychat.asgi.application"
 WSGI_APPLICATION = 'mychat.wsgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': "channels.layers.InMemoryChannelLayer"
+        }
+    }
 
 
 # Database

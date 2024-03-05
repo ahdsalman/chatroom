@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-
+from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     # intigrations
     'rest_framework',
     # apps
+    'rest_framework_simplejwt',
+
     'chatapp'
 ]
 
@@ -82,7 +84,7 @@ DATABASES = {
         'ENGINE': "django.db.backends.postgresql",
         'NAME': 'chat',
         'USER':'postgres',
-        'PASSWORD':'99786',
+        'PASSWORD':'1234',
         'HOST':'localhost',
         'PORT':5432
     }
@@ -140,3 +142,18 @@ EMAIL_HOST_PASSWORD = 'vhvw dabi kyup hcjv'
 EMAIL_USE_TLS = True
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': False,
+    'ALGORITHM': 'HS256',
+
+}

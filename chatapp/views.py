@@ -97,29 +97,29 @@ class UserProfileView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-# class ChangePasswordView(APIView):
-#     serializer = ChangePasswordSerializer 
-#     permission_classes = [IsAuthenticated]
+class ChangePasswordView(APIView):
+    serializer = ChangePasswordSerializer 
+    permission_classes = [IsAuthenticated]
     
-#     def get_object(self):
-#         return self.request.user
+    def get_object(self):
+        return self.request.user
 
-#     def update(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
+    def update(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-#         old_password = serializer.validated_data["old_password"]
-#         password = serializer.validated_data["password"]
+        old_password = serializer.validated_data["old_password"]
+        password = serializer.validated_data["password"]
 
-#         if not request.user.check_password(old_password):
-#             return Response(
-#                 {"detail": "Old password is incorrect."},
-#                 status=status.HTTP_400_BAD_REQUEST,
-#             )
-#         request.user.set_password(password)
-#         request.user.save()
-#         return Response(
-#             {"detail": "Password changed successfully."}, status=status.HTTP_200_OK
-#         )
+        if not request.user.check_password(old_password):
+            return Response(
+                {"detail": "Old password is incorrect."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        request.user.set_password(password)
+        request.user.save()
+        return Response(
+            {"detail": "Password changed successfully."}, status=status.HTTP_200_OK
+        )
 
 

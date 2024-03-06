@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import UserRegisterSerializer,OTPSerializer,MyTokenObtainPairSerializer,UserProfileSerializer
+from .serializers import UserRegisterSerializer,OTPSerializer,MyTokenObtainPairSerializer,UserProfileSerializer,ChangePasswordSerializer
 from django.conf import settings
 from .models import User
 import random
@@ -16,9 +16,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 class ResgisterView(APIView):
     def post(self,request,**kwags):
-
         serializer = UserRegisterSerializer(data=request.data)
-
         if serializer.is_valid():
             user = User.objects.create_user(
                 email= serializer.validated_data.get('email'),
@@ -88,10 +86,40 @@ class UserProfileView(APIView):
                 return Response(
                     {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
                 )
+        
     def patch(self, request):
         serializer = UserProfileSerializer(request.user, data=request.data, partial=True)
         if serializer.is_valid():
+
             serializer.save()
             return Response(serializer.data)
             
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+class ChangePasswordView(APIView):
+    serializer = ChangePasswordSerializer 
+    permission_classes = [IsAuthenticated]
+    
+    def get_object(self):
+        return self.request.user
+
+    def update(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        old_password = serializer.validated_data["old_password"]
+        password = serializer.validated_data["password"]
+
+        if not request.user.check_password(old_password):
+            return Response(
+                {"detail": "Old password is incorrect."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        request.user.set_password(password)
+        request.user.save()
+        return Response(
+            {"detail": "Password changed successfully."}, status=status.HTTP_200_OK
+        )
+
+

@@ -43,7 +43,8 @@ INSTALLED_APPS = [
      'rest_framework_simplejwt',
     'channels',
     # apps
-    'chatapp'
+    'chatapp',
+    'mainchat'
 ]
 
 MIDDLEWARE = [
@@ -91,7 +92,7 @@ DATABASES = {
         'ENGINE': "django.db.backends.postgresql",
         'NAME': 'chat',
         'USER':'postgres',
-        'PASSWORD':'1234',
+        'PASSWORD':'99786',
         'HOST':'localhost',
         'PORT':5432
     }
